@@ -1,0 +1,54 @@
+# ============================================
+#  应急线路订阅  |  Emergency Nodes
+#  两个独立入口：法国 alwaysdata / 美国 Vercel
+#  这两条是"机场全挂时的最后一根绳"，不是日常主力
+# ============================================
+
+mixed-port: 7890
+allow-lan: false
+mode: rule
+log-level: info
+ipv6: false
+
+proxies:
+  - name: "🇫🇷 FR-法国"
+    type: vless
+    server: iranran.alwaysdata.net
+    port: 443
+    uuid: 956b3ca7-f175-48d6-9d8e-435ef8fb59d0
+    network: ws
+    tls: true
+    udp: false
+    servername: iranran.alwaysdata.net
+    client-fingerprint: chrome
+    ws-opts:
+      path: "/assets/js/app.c9cedb7821dc52100c9e444810284501.js"
+      headers:
+        Host: iranran.alwaysdata.net
+
+  - name: "🇺🇸 US-美国"
+    type: vless
+    server: devbox.icyrene.xyz
+    port: 443
+    uuid: c8d1a0ae-e65d-45b1-a109-510191298f44
+    network: ws
+    tls: true
+    udp: false
+    servername: devbox.icyrene.xyz
+    client-fingerprint: chrome
+    ws-opts:
+      path: "/assets/vendor.chunk.ecfb4d61da54cdd1"
+      headers:
+        Host: devbox.icyrene.xyz
+
+proxy-groups:
+  - name: "🚀 应急线路"
+    type: select
+    proxies:
+      - "🇫🇷 FR-法国"
+      - "🇺🇸 US-美国"
+
+rules:
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,🚀 应急线路
